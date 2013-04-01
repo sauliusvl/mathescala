@@ -14,6 +14,8 @@ trait Expression {
   def -(rhs: Expression): Expression = 'Plus(this, 'Times(-1, rhs))
   def ^(rhs: Expression): Expression = 'Power(this, rhs)
 
+  def & = 'Function(this)
+
   // Applying arguments to an expression constructs a new expression with this one
   // as the head and the passed arguments as the arguments.
   def apply(arguments: Expression*) = {
