@@ -1,51 +1,36 @@
 package mathescala
 
-import scala.math.Numeric
+import mathescala.implicits._
 
 trait Expression {
 	val head: Expression
 	val args: Seq[Expression]
+
+  // Syntactic sugar for constructing arithmetic expressions.
+
+  def +(rhs: Expression): Expression = 'Plus(this, rhs)
+  def *(rhs: Expression): Expression = 'Times(this, rhs)
+  def /(rhs: Expression): Expression = 'Times(this, 'Power(rhs, -1))
+  def -(rhs: Expression): Expression = 'Plus(this, 'Times(-1, rhs))
+  def ^(rhs: Expression): Expression = 'Power(this, rhs)
+
+  // Applying arguments to an expression constructs a new expression with this one
+  // as the head and the passed arguments as the arguments.
+  def apply(arguments: Expression*) = {
+    val hd = this
+    new Expression {
+      val args: Seq[Expression] = arguments
+      val head: Expression = hd
+    }
+  }
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[Expression]
+  override def equals(other: Any): Boolean = other match {
+    case that: Expression => (that canEqual this) && (this.head == that.head) && (this.args == that.args)
+    case _ => false
+  }
+  override def hashCode: Int = (41 * (41 + head.hashCode)) + args.hashCode()
+
+  override def toString = head.toString + "[" + args.mkString(", ") + "]"
 }
 
-trait SymbolicExpression extends Expression {
-	val symbol: Symbol
-}
-
-trait NumericExpression extends Expression {
-	type numericType
-	val value: numericType
-}
-
-object SymbolSymbol extends SymbolicExpression {
-	val head: Expression = this
-	val args: Seq[Expression] = Nil
-	val symbol: Symbol = 'Symbol
-	override def toString = symbol.toString
-}
-
-class SymbolExpression private (val symbol: Symbol) extends Expression {
-	val head: Expression = SymbolSymbol
-	val args: Seq[Expression] = Nil
-	override def toString = symbol.toString
-}
-
-object SymbolExpression {
-	def apply(symbol: Symbol) = if (symbol == SymbolSymbol.symbol) SymbolSymbol else new SymbolExpression(symbol)
-}
-
-
-class NumberExpression[T: Numeric] private (val v: T) extends NumericExpression {
-	val head: Expression = SymbolExpression('Numeric)
-	val args: Seq[Expression] = Nil
-	type numericType = T
-	val value: numericType = v
-	override def toString = value.toString
-}
-
-object NumberExpression {
-	def apply[T: Numeric](value: T) = new NumberExpression(value)
-}
-
-case class MathematicaExpression(head: Expression, args: Expression*) extends Expression {
-	
-}
