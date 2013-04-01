@@ -24,7 +24,11 @@ object SymbolicExpression {
     case s => new SymbolicExpression {
       val symbol: Symbol = name
       val args: Seq[Expression] = Nil
-      val head: Expression = this
+      val head: Expression = new SymbolicExpression {
+        val symbol: Symbol = 'Symbol
+        val args: Seq[Expression] = Nil
+        val head: Expression = this // head of Symbol is Symbol
+      }
     }
   }
 
