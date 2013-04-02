@@ -17,10 +17,12 @@ val fact = 'fact(5) /:: Seq('fact('x_) --> 'x * 'fact('x - 1), 'fact(1) --> 1)
 
 Most of Mathematica's syntax is (rather *will be*) implemented with almost identical semantics, including pattern matching, pure functions, basic arithmetic evaluation and more. Of course, obviously due to to scala naming rules many operators have different names.
 
-## Syntax Reference
+## Syntax
 
 ### Expressions
 
 ### Patterns and Replacements
 
 ### Pure Functions
+
+## Examples
