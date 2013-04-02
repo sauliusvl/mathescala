@@ -11,7 +11,7 @@ scala> import mathescala._
 scala> import mathescala.implicits._
 
 scala> ('$ ^ 2).& /@ 'Range(1, 5)
-res0: mathescala.Expression = 'List(1, 4, 9, 16, 25)
+res0: mathescala.Expression = List[1, 4, 9, 16, 25]
 
 scala> 'Plus @@ res0
 res1: mathescala.Expression = 55
