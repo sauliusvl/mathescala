@@ -1,6 +1,6 @@
 # MatheScala [![Build Status](https://travis-ci.org/sauliusvl/mathescala.png)](https://travis-ci.org/sauliusvl/mathescala)
 
-MatheScala is a scala DSL that lets you write [Mathematica](http://en.wikipedia.org/wiki/Mathematica) code and perform symbolic computations in scala. The library was conceived as a proof of concept, hence it probably shouldn't be used in real life (not that anyone would want to do that). 
+MatheScala is a scala DSL that lets you write [Mathematica](http://en.wikipedia.org/wiki/Mathematica) like code and perform symbolic computations in scala. The library was conceived as a proof of concept, hence it probably shouldn't be used in real life (not that anyone would want to do that). 
 
 ## Introduction
 
