@@ -5,7 +5,7 @@ import mathescala.implicits._
 
 import org.scalatest.FunSuite
 
-class BasicOperations extends FunSuite {
+class OperatorShorthands extends FunSuite {
 
   test("Arithmetic operator shorthands expand correctly") {
     assert('x + 2 === 'Plus('x, 2))
@@ -33,18 +33,10 @@ class BasicOperations extends FunSuite {
     assert('z /:: 'List('x, 'y) === 'ReplaceRepeated('z, 'List('x, 'y)))
   }
 
-  test("Mapping and function creation operator shorthands expand correctly") {
+  test("Misc operator shorthands expand correctly") {
     assert('f /@ 'List(1, 2) === 'Map('f, 'List(1, 2)))
     assert('x.& == 'Function('x))
+    assert('x ? 'y === 'PatternTest('x, 'y))
   }
-
-//  test("Replacing the head works") {
-//    assert('Plus @@ 'Times('a, 'b) === 'Plus('a, 'b))
-//  }
-//
-//  test("Heads of symbols and numbers don't get replaced") {
-//    assert('new @@ 'x === 'x.toExpression)
-//    assert('new @@ 1.toExpression === 1.toExpression)
-//  }
 
 }
