@@ -13,7 +13,16 @@ trait Expression {
   def /(rhs: Expression): Expression = 'Times(this, 'Power(rhs, -1))
   def -(rhs: Expression): Expression = 'Plus(this, 'Times(-1, rhs))
   def ^(rhs: Expression): Expression = 'Power(this, rhs)
+
   def & = 'Function(this)
+
+  def @@(rhs: Expression): Expression = {
+    val hd = this
+    new Expression {
+      val args: Seq[Expression] = rhs.args
+      val head: Expression = hd
+    }
+  }
 
   // Applying arguments to an expression constructs a new expression with this one
   // as the head and the passed arguments as the arguments.
