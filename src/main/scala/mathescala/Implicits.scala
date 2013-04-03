@@ -1,7 +1,6 @@
 package mathescala
 
 import scala.language.implicitConversions
-import scala.math.Numeric
 
 class RichExpression(val e: Expression) {
   def toExpression: Expression = e
@@ -9,8 +8,10 @@ class RichExpression(val e: Expression) {
 
 object implicits {
   implicit def fromSymbol(s: Symbol): Expression = SymbolicExpression(s)
-  implicit def fromNumeric[T: Numeric](num: T): NumericExpression = NumericExpression(num)
-  implicit def toRichExpression(s: Symbol): RichExpression = new RichExpression(s)
-  implicit def toRichExpression[T: Numeric](num: T): RichExpression = new RichExpression(num)
+  implicit def fromInt(num: Int): Expression = IntegerExpression(num)
+  implicit def fromDouble(num: Double): Expression = RealExpression(num)
+  implicit def toRichSymbol(s: Symbol): RichExpression = new RichExpression(s)
+  implicit def toRichInteger(num: Int): RichExpression = new RichExpression(num)
+  implicit def toRichReal(num: Double): RichExpression = new RichExpression(num)
 }
 

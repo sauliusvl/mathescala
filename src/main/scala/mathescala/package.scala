@@ -9,7 +9,10 @@ package object mathescala {
     val assignments: mutable.Map[Expression, Expression] = mutable.Map()
   }
 
-  class ParseException(msg: String) extends Exception(msg)
+  def showAssignments(implicit scope: Scope) {
+    println(scope.assignments.map(a => a._1 + " = " + a._2).mkString("\n"))
+  }
 }
+
 
 

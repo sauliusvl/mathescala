@@ -6,6 +6,8 @@ import mathescala.implicits._
 trait SymbolicExpression extends Expression {
   val symbol: Symbol
 
+  override def eval(implicit scope: Scope): Expression = this
+
   override def canEqual(other: Any): Boolean = other.isInstanceOf[SymbolicExpression]
   override def equals(other: Any): Boolean = other match {
     case that: SymbolicExpression => this.symbol == that.symbol

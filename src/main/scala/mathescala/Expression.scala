@@ -33,8 +33,44 @@ trait Expression {
   def /@(rhs: Expression): Expression = 'Map(this, rhs)
   def ?(rhs: Expression): Expression = 'PatternTest(this, rhs)
 
+  def basicEval: Expression = {
+    if (head == 'Plus.toExpression || head == 'Times.toExpression) {
+      val eargs = args.map(_.basicEval)
+      val ints = eargs.collect { case e: IntegerExpression => e}
+      val reals = eargs.collect { case e: RealExpression => e}
+      val others = eargs.filter(a => !ints.contains(a) && !reals.contains(a))
+      def agg[T](collection: Seq[T])(implicit num: Numeric[T]): T = {
+        if (head == 'Plus.toExpression)
+          collection.foldLeft(num.zero){num.plus(_, _)}
+        else
+          collection.foldLeft(num.one){num.times(_, _)}
+      }
+      val sum: Expression = if (reals.isEmpty)
+          IntegerExpression(agg(ints.map(_.value)))
+        else
+          RealExpression(agg(ints.map(_.value)) + agg(reals.map(_.value)))
+      if (others.isEmpty) sum else head((sum +: others): _*)
+    } else this
+  }
+
   def eval(implicit scope: Scope): Expression = {
-    this
+    def assuming(cond: => Boolean)(code: => Expression): Expression =
+      if (!cond) throw new SyntaxError("Syntax error") else code // in" + unevaluatedToString) else code
+
+    head match {
+      case s if s == 'Set.toExpression =>
+        assuming(args.length == 2) {
+          val rhs = args(1).eval
+          scope.assignments += args(0) -> rhs
+          rhs
+        }
+      case s if s == 'SetDelayed.toExpression =>
+        assuming(args.length == 2) {
+          scope.assignments += args(0) -> args(1)
+          'Null.toExpression
+        }
+      case _ => this
+    }
   }
 
   // Applying arguments to an expression constructs a new expression with this one
@@ -55,6 +91,8 @@ trait Expression {
   }
 
   override def hashCode: Int = (41 * (41 + head.hashCode)) + args.hashCode()
+
+  //def unevaluatedToString: String = head.unevaluatedToString + "[" + args.map(_.unevaluatedToString).mkString(", ") + "]"
 
   override def toString = {
     val evaluated = eval
