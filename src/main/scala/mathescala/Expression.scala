@@ -49,7 +49,13 @@ trait Expression {
           IntegerExpression(agg(ints.map(_.value)))
         else
           RealExpression(agg(ints.map(_.value)) + agg(reals.map(_.value)))
-      if (others.isEmpty) sum else head((sum +: others): _*)
+      val result = if (others.isEmpty) sum else head((sum +: others): _*)
+      if (result.head == 'Plus.toExpression) {
+        'Plus(result.args.groupBy(g => g).map(g => if (g._2.length > 1) 'Times(g._2.length, g._1) else g._1).toSeq: _*)
+      } else if (result.head == 'Times.toExpression) {
+        'Times(result.args.groupBy(g => g).map(g => if (g._2.length > 1) 'Power(g._1, g._2.length) else g._1).toSeq: _*)
+      } else
+        result
     } else this
   }
 
