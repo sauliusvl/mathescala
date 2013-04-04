@@ -7,6 +7,8 @@ trait NumericExpression extends Expression {
   val value: numericType
   val args: Seq[Expression] = Nil
 
+  override def eval(implicit scope: Scope): Expression = this
+
   override def canEqual(other: Any): Boolean = other.isInstanceOf[NumericExpression]
   override def equals(other: Any): Boolean = other match {
     case that: NumericExpression => this.value == that.value
