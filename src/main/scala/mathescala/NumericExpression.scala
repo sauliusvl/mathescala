@@ -8,6 +8,7 @@ trait NumericExpression extends Expression {
   val args: Seq[Expression] = Nil
 
   override def eval(implicit scope: Scope): Expression = this
+  override def arithmeticEval: Expression = this
 
   override def canEqual(other: Any): Boolean = other.isInstanceOf[NumericExpression]
   override def equals(other: Any): Boolean = other match {
@@ -18,6 +19,24 @@ trait NumericExpression extends Expression {
   override def toString = value match {
     case n: Char => n.toInt.toString
     case n => n.toString
+  }
+}
+
+object NumericExpression {
+  val zero: NumericExpression = IntegerExpression(0)
+  val one:NumericExpression = IntegerExpression(1)
+
+  def times(lhs: NumericExpression, rhs: NumericExpression): NumericExpression = (lhs, rhs) match {
+    case (l: IntegerExpression, r: IntegerExpression) => IntegerExpression(l.value * r.value)
+    case (l: IntegerExpression, r: RealExpression) => RealExpression(l.value * r.value)
+    case (l: RealExpression, r: IntegerExpression) => RealExpression(l.value * r.value)
+    case (l: RealExpression, r: RealExpression) => RealExpression(l.value * r.value)
+  }
+  def plus(lhs: NumericExpression, rhs: NumericExpression): NumericExpression = (lhs, rhs) match {
+    case (l: IntegerExpression, r: IntegerExpression) => IntegerExpression(l.value + r.value)
+    case (l: IntegerExpression, r: RealExpression) => RealExpression(l.value + r.value)
+    case (l: RealExpression, r: IntegerExpression) => RealExpression(l.value + r.value)
+    case (l: RealExpression, r: RealExpression) => RealExpression(l.value + r.value)
   }
 }
 

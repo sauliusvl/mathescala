@@ -4,6 +4,31 @@ import mathescala.implicits._
 
 trait ExpressionEvaluator { self: Expression =>
 
+  // If the expression is flat, flatten it.
+  def flatten(implicit scope: Scope): Expression = {
+    head match {
+      case hd if scope.isAttributeSet(hd, 'Flat) => {
+        val flatArgs = args.map(_.flatten).flatMap(a => if (a.head == hd) a.args else Seq(a))
+        head(flatArgs: _*)
+      }
+      case _ => this
+    }
+  }
+
+  // If the expression is orderless, bring numerical factors to the front and sort other arguments alphabetically.
+  def order(implicit scope: Scope): Expression = {
+    head match {
+      case hd if scope.isAttributeSet(hd, 'Orderless) => {
+        head(args.map(_.order).sortBy(_ match {
+          case n: NumericExpression => "0"
+          case s: SymbolicExpression => "1" + s.symbol.toString()
+          case e: Expression => "2" + e.head.toString()
+        }): _*)
+      }
+      case _ => this
+    }
+  }
+
   def eval(implicit scope: Scope): Expression = {
 //    def assuming(cond: => Boolean)(code: => Expression): Expression =
 //      if (!cond) throw new SyntaxError("Syntax error") else code
@@ -27,8 +52,8 @@ trait ExpressionEvaluator { self: Expression =>
 //    }
 
     // Do basic evaluation, take care of flattening, one identity and orderless
-    val ehead = head.basicEval
-    val eargs = args.map(_.basicEval)
+    //val ehead = head.basicEval
+    //val eargs = args.map(_.basicEval)
 
     this
     //scope.assignments
