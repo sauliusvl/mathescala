@@ -65,5 +65,6 @@ class ArithmeticEvaluation extends FunSuite {
     assert('Plus('a, 'Times(-2, 'a), 'a).arithmeticEval === 0.toExpression)
     assert('Plus('Times('f('x), 'g('y)), 'Times('g('y), 'f('x)), 'Times(-2, 'f('x), 'g('y))).arithmeticEval === 0.toExpression)
     assert('f('Plus('a, 'Times(3, 'a))).arithmeticEval === 'f('Times(4, 'a)))
+    assert('Plus('Plus('x, 'x), 'Times(-1, 'x)).arithmeticEval === 'x.toExpression)
   }
 }
